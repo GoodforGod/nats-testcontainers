@@ -14,7 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class NatsContainerTests extends AbstractNatsRunner {
 
     @Container
-    private static final NatsContainer<?> container = new NatsContainer<>("nats:2.11-alpine");
+    private static final NatsContainer container = new NatsContainer("nats:2.11-alpine");
 
     @Test
     void checkIsRunningAndMonitoringOk() {

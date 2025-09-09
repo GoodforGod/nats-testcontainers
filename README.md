@@ -40,7 +40,7 @@ Run Nats container *without* authentication.
 class NatsContainerTests {
 
     @Container
-    private static final NatsContainer<?> container = new NatsContainer<>("nats:2.11-alpine");
+    private static final NatsContainer container = new NatsContainer("nats:2.11-alpine");
 
     @Test
     void checkContainerIsRunning() {
@@ -61,9 +61,9 @@ Check [here](https://www.testcontainers.org/features/startup_and_waits/) for mor
 
 All authentication options are available as per [Nats Docker description](https://hub.docker.com/_/nats).
 
-*Without authentication or password or random password* configuration is **required** as per [docker image](https://hub.docker.com/_/nats).
+**No authorization** is set by default in container.
 
-#### Without Authentication
+#### Authentication Token
 
 You can run Nats without authentication by specifying with setter.
 
@@ -72,14 +72,85 @@ You can run Nats without authentication by specifying with setter.
 class NatsContainerTests {
 
     @Container
-    private static final NatsContainer<?> container = new NatsContainer<>()
-            .withoutAuth();
+    private static final NatsContainer container = new NatsContainer()
+            .withAuthTokenRandom();
 
     @Test
     void checkContainerIsRunning() {
         assertTrue(container.isRunning());
     }
 }
+```
+
+You can also specify your own token:
+
+```java
+@Testcontainers
+class NatsContainerTests {
+
+    @Container
+    private static final NatsContainer container = new NatsContainer()
+            .withAuthToken("myToken");
+
+    @Test
+    void checkContainerIsRunning() {
+        assertTrue(container.isRunning());
+    }
+}
+```
+
+#### Authentication User Password
+
+You can run container with username and password.
+
+```java
+@Testcontainers
+class NatsContainerTests {
+
+    @Container
+    private static final NatsContainer container = new NatsContainer()
+            .withUsernameAndPassword("user", "pass");
+
+    @Test
+    void checkContainerIsRunning() {
+        assertTrue(container.isRunning());
+    }
+}
+```
+
+## Cluster
+
+You can run [NATS cluster](https://docs.nats.io/running-a-nats-service/configuration/clustering) as TestContainers.
+
+Default cluster with 3 nodes is preconfigured for easy usage.
+
+```java
+@Testcontainers
+class NatsContainerTests {
+
+    @Container
+    private static final NatsCluster container = NatsCluster.builder("nats:2.11-alpine").build();
+
+    @Test
+    void checkContainerIsRunning() {
+        CLUSTER.getHost();
+        CLUSTER.getPort();
+        CLUSTER.getUser();
+        CLUSTER.getPassword();
+    }
+}
+```
+
+### Cluster Builder
+
+You can build cluster with desired size via *NatsClusterBuilder*.
+
+You can check each container type via specified cluster container method.
+
+```java
+final NatsCluster cluster = NatsCluster.builder("nats:2.11-alpine")
+            .withNodes(5)              // 5 nodes
+            .build();
 ```
 
 ## License

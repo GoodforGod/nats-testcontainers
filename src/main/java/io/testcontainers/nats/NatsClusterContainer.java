@@ -14,7 +14,7 @@ import org.testcontainers.utility.DockerImageName;
  * @see NatsClusterBuilder
  * @since 08.09.2025
  */
-public class NatsClusterContainer<SELF extends NatsClusterContainer<SELF>> extends NatsContainer<SELF> {
+public class NatsClusterContainer extends NatsContainer {
 
     public enum NodeType {
 
@@ -63,23 +63,23 @@ public class NatsClusterContainer<SELF extends NatsClusterContainer<SELF>> exten
         return alias;
     }
 
-    static NatsClusterContainer<?> master(DockerImageName image, String clusterId, Auth auth) {
+    static NatsClusterContainer master(DockerImageName image, String clusterId, Auth auth) {
         final String alias = NodeType.LEADER.alias(clusterId, 0);
         final List<String> cmd = getCommonCommand(alias, clusterId, auth);
 
-        var container = new NatsClusterContainer<>(image, NodeType.LEADER, alias);
+        var container = new NatsClusterContainer(image, NodeType.LEADER, alias);
         if (auth.token != null) {
             container.withAuthToken(auth.token);
         }
         if (auth.username != null && auth.password != null) {
             container.withUsernameAndPassword(auth.username, auth.password);
         }
-        return container
+        return (NatsClusterContainer) container
                 .withNetworkAliases(alias)
                 .withCommand(cmd.toArray(new String[0]));
     }
 
-    static NatsClusterContainer<?>
+    static NatsClusterContainer
             slave(DockerImageName image, String clusterId, Auth auth, int nodeNumber, String clusterAlias) {
         final String defaultClusterUserName = "ruser";
         final String defaultClusterUserPassword = "T0pS3cr3t";
@@ -92,14 +92,14 @@ public class NatsClusterContainer<SELF extends NatsClusterContainer<SELF>> exten
         cmd.add(String.format("nats://%s:%s@%s:%s",
                 defaultClusterUserName, defaultClusterUserPassword, clusterAlias, NatsContainer.PORT_ROUTING));
 
-        var container = new NatsClusterContainer<>(image, NodeType.LEADER, alias);
+        var container = new NatsClusterContainer(image, NodeType.LEADER, alias);
         if (auth.token != null) {
             container.withAuthToken(auth.token);
         }
         if (auth.username != null && auth.password != null) {
             container.withUsernameAndPassword(auth.username, auth.password);
         }
-        return container
+        return (NatsClusterContainer) container
                 .withNetworkAliases(alias)
                 .withCommand(cmd.toArray(new String[0]));
     }
