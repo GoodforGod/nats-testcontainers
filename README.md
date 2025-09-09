@@ -1,7 +1,7 @@
 # Nats TestContainers
 
 [![Minimum required Java version](https://img.shields.io/badge/Java-11%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/11/)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/nats-testcontainer/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/nats-testcontainer)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.goodforgod/nats-testcontainer/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.goodforgod/nats-testcontainer)
 [![GitHub Action](https://github.com/goodforgod/nats-testcontainers/workflows/CI%20Master/badge.svg)](https://github.com/GoodforGod/nats-testcontainers/actions?query=workflow%3A"CI+Master"++)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_nats-testcontainers&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_nats-testcontainers)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_nats-testcontainers&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_nats-testcontainers)
@@ -40,7 +40,7 @@ Run Nats container *without* authentication.
 class NatsContainerTests {
 
     @Container
-    private static final NatsContainer<?> container = new NatsContainer<>("nats:2.11-alpine");
+    private static final NatsContainer container = new NatsContainer("nats:2.11-alpine");
 
     @Test
     void checkContainerIsRunning() {
@@ -61,25 +61,93 @@ Check [here](https://www.testcontainers.org/features/startup_and_waits/) for mor
 
 All authentication options are available as per [Nats Docker description](https://hub.docker.com/_/nats).
 
-*Without authentication or password or random password* configuration is **required** as per [docker image](https://hub.docker.com/_/nats).
+**No authorization** is set by default in container.
 
-#### Without Authentication
+#### Authentication Token
 
-You can run Nats without authentication by specifying with setter.
+You can run Nats with authentication by [token](https://docs.nats.io/running-a-nats-service/configuration/securing_nats/auth_intro/tokens).
 
 ```java
 @Testcontainers
 class NatsContainerTests {
 
     @Container
-    private static final NatsContainer<?> container = new NatsContainer<>()
-            .withoutAuth();
+    private static final NatsContainer container = new NatsContainer()
+            .withAuthTokenRandom();
 
     @Test
     void checkContainerIsRunning() {
         assertTrue(container.isRunning());
     }
 }
+```
+
+You can also specify your own token:
+
+```java
+@Testcontainers
+class NatsContainerTests {
+
+    @Container
+    private static final NatsContainer container = new NatsContainer()
+            .withAuthToken("myToken");
+
+    @Test
+    void checkContainerIsRunning() {
+        assertTrue(container.isRunning());
+    }
+}
+```
+
+#### Authentication User Password
+
+You can run container with authentication by [username and password](https://docs.nats.io/running-a-nats-service/configuration/securing_nats/auth_intro/username_password).
+
+```java
+@Testcontainers
+class NatsContainerTests {
+
+    @Container
+    private static final NatsContainer container = new NatsContainer()
+            .withUsernameAndPassword("user", "pass");
+
+    @Test
+    void checkContainerIsRunning() {
+        assertTrue(container.isRunning());
+    }
+}
+```
+
+## Cluster
+
+You can run [NATS cluster](https://docs.nats.io/running-a-nats-service/configuration/clustering) as TestContainers.
+
+Default cluster with 3 nodes is preconfigured for easy usage.
+
+```java
+@Testcontainers
+class NatsContainerTests {
+
+    @Container
+    private static final NatsCluster cluster = NatsCluster.builder("nats:2.11-alpine").build();
+
+    @Test
+    void checkClusterIsRunning() {
+        assertTrue(cluster.isRunning());
+    }
+}
+```
+
+### Cluster Builder
+
+You can build cluster with desired size via *NatsClusterBuilder*.
+
+You can check each container type via specified cluster container method.
+
+```java
+final NatsCluster cluster = NatsCluster.builder("nats:2.11-alpine")
+            .withNodes(5)              // 5 nodes
+            .build();
 ```
 
 ## License

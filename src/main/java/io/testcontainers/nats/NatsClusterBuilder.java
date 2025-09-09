@@ -60,28 +60,28 @@ public class NatsClusterBuilder {
         return new NatsCluster(buildContainers(network));
     }
 
-    private List<NatsClusterContainer<?>> buildContainers(@Nullable Network network) {
+    private List<NatsClusterContainer> buildContainers(@Nullable Network network) {
         if (image == null)
             throw new UnsupportedOperationException("Image version can not be empty!");
         if (nodes < 2)
             throw new IllegalArgumentException("Nodes can not be less 2");
 
         final String clusterId = RandomStringUtils.randomAlphanumeric(8);
-        final NatsClusterContainer<?> leader = NatsClusterContainer.master(image, clusterId, auth);
+        final NatsClusterContainer leader = NatsClusterContainer.master(image, clusterId, auth);
 
         // Build nodes
-        final List<NatsClusterContainer<?>> nodes = new ArrayList<>(this.nodes);
+        final List<NatsClusterContainer> nodes = new ArrayList<>(this.nodes);
         for (int i = 1; i <= this.nodes; i++) {
-            var node = NatsClusterContainer.slave(image, clusterId, auth, i, leader.getAlias())
-                    .dependsOn(leader);
+            var node = ((NatsClusterContainer) NatsClusterContainer.slave(image, clusterId, auth, i, leader.getAlias())
+                    .dependsOn(leader));
             nodes.add(node);
         }
 
         return Stream.of(List.of(leader), nodes)
                 .flatMap(Collection::stream)
                 .map(c -> (network != null)
-                        ? ((NatsClusterContainer<?>) c.withNetwork(network))
-                        : ((NatsClusterContainer<?>) c.withNetwork(Network.SHARED)))
+                        ? ((NatsClusterContainer) c.withNetwork(network))
+                        : ((NatsClusterContainer) c.withNetwork(Network.SHARED)))
                 .collect(Collectors.toUnmodifiableList());
     }
 }

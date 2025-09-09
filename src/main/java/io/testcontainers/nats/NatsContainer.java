@@ -24,7 +24,7 @@ import org.testcontainers.utility.DockerImageName;
  * @author Anton Kurako (GoodforGod)
  * @since 08.09.2025
  */
-public class NatsContainer<SELF extends NatsContainer<SELF>> extends GenericContainer<SELF> implements NatsStartable {
+public class NatsContainer extends GenericContainer<NatsContainer> implements NatsStartable {
 
     public static final Integer PORT_CLIENT = 4222;
     public static final Integer PORT_ROUTING = 6222;
@@ -74,11 +74,11 @@ public class NatsContainer<SELF extends NatsContainer<SELF>> extends GenericCont
         super.containerIsStarting(containerInfo);
     }
 
-    public SELF withAuthTokenRandom() {
+    public NatsContainer withAuthTokenRandom() {
         return withAuthToken(UUID.randomUUID().toString().replace("-", ""));
     }
 
-    public SELF withAuthToken(String token) {
+    public NatsContainer withAuthToken(String token) {
         this.token = Objects.requireNonNull(token);
 
         final String id = RandomStringUtils.randomAlphanumeric(8);
@@ -87,10 +87,10 @@ public class NatsContainer<SELF extends NatsContainer<SELF>> extends GenericCont
         cmd.add(token);
         withCommand(cmd.toArray(String[]::new));
 
-        return (SELF) this;
+        return this;
     }
 
-    public SELF withUsernameAndPassword(String username, String password) {
+    public NatsContainer withUsernameAndPassword(String username, String password) {
         this.username = Objects.requireNonNull(username);
         this.password = Objects.requireNonNull(password);
 
@@ -102,7 +102,7 @@ public class NatsContainer<SELF extends NatsContainer<SELF>> extends GenericCont
         cmd.add(password);
         withCommand(cmd.toArray(String[]::new));
 
-        return (SELF) this;
+        return this;
     }
 
     @Nullable

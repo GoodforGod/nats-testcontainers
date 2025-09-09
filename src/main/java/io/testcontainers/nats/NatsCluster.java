@@ -62,9 +62,9 @@ public class NatsCluster implements NatsStartable, Startable, ContainerState {
         }
     }
 
-    private final List<NatsClusterContainer<?>> nodes;
+    private final List<NatsClusterContainer> nodes;
 
-    NatsCluster(List<NatsClusterContainer<?>> nodes) {
+    NatsCluster(List<NatsClusterContainer> nodes) {
         this.nodes = List.copyOf(nodes);
     }
 
@@ -76,7 +76,7 @@ public class NatsCluster implements NatsStartable, Startable, ContainerState {
         return new NatsClusterBuilder(imageName);
     }
 
-    public List<NatsClusterContainer<?>> getNodes() {
+    public List<NatsClusterContainer> getNodes() {
         return nodes;
     }
 

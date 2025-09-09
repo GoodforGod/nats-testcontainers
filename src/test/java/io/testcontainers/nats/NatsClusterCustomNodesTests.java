@@ -11,11 +11,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * @since 08.09.2025
  */
 @Testcontainers
-class NatsContainerUserPassTests extends AbstractNatsRunner {
+class NatsClusterCustomNodesTests extends AbstractNatsRunner {
 
     @Container
-    private static final NatsContainer container = new NatsContainer("nats:2.11-alpine")
-            .withUsernameAndPassword("user", "pass");
+    private static final NatsCluster container = NatsCluster.builder("nats:2.11-alpine")
+            .withNodes(5)
+            .build();
 
     @Test
     void checkIsRunningAndMonitoringOk() {

@@ -14,8 +14,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class NatsContainerTokenTests extends AbstractNatsRunner {
 
     @Container
-    private static final NatsContainer<?> container = new NatsContainer<>("nats:2.11-alpine")
-            .withAuthTokenRandom();
+    private static final NatsContainer container = new NatsContainer("nats:2.11-alpine")
+            .withAuthToken("myToken");
 
     @Test
     void checkIsRunningAndMonitoringOk() {
