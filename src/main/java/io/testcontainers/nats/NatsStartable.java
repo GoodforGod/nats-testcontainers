@@ -1,8 +1,7 @@
 package io.testcontainers.nats;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.net.URI;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Anton Kurako (GoodforGod)

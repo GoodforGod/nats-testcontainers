@@ -82,41 +82,41 @@ public class NatsCluster implements NatsStartable, Startable, ContainerState {
 
     @Nullable
     public String getUsername() {
-        return nodes.getFirst().getUsername();
+        return nodes.get(0).getUsername();
     }
 
     @Nullable
     public String getPassword() {
-        return nodes.getFirst().getPassword();
+        return nodes.get(0).getPassword();
     }
 
     @Nullable
     public String getToken() {
-        return nodes.getFirst().getToken();
+        return nodes.get(0).getToken();
     }
 
     public URI getURI() {
-        return nodes.getFirst().getURI();
+        return nodes.get(0).getURI();
     }
 
     public URI getMonitoringURI() {
-        return nodes.getFirst().getMonitoringURI();
+        return nodes.get(0).getMonitoringURI();
     }
 
     public String getHost() {
-        return nodes.getFirst().getHost();
+        return nodes.get(0).getHost();
     }
 
     public int getPort() {
-        return nodes.getFirst().getPort();
+        return nodes.get(0).getPort();
     }
 
     public int getPortRouting() {
-        return nodes.getFirst().getPortRouting();
+        return nodes.get(0).getPortRouting();
     }
 
     public int getPortMonitoring() {
-        return nodes.getFirst().getPortMonitoring();
+        return nodes.get(0).getPortMonitoring();
     }
 
     public List<HostAndPort> getHostsAndPorts() {
@@ -127,12 +127,12 @@ public class NatsCluster implements NatsStartable, Startable, ContainerState {
 
     @Override
     public List<Integer> getExposedPorts() {
-        return nodes.getFirst().getExposedPorts();
+        return nodes.get(0).getExposedPorts();
     }
 
     @Override
     public InspectContainerResponse getContainerInfo() {
-        return nodes.getFirst().getContainerInfo();
+        return nodes.get(0).getContainerInfo();
     }
 
     @Override

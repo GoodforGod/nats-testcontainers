@@ -1,17 +1,15 @@
 package io.testcontainers.nats;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.nats.client.Connection;
 import io.nats.client.Nats;
 import io.nats.client.Options;
-
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Anton Kurako (GoodforGod)
@@ -25,8 +23,7 @@ abstract class AbstractNatsRunner {
             .build();
 
     void checkMonitoringOk(NatsStartable container) {
-        var uri = URI.create(container.getMonitoringURI().toString().replace("[::1]", "localhost"));
-        // var uri = container.getURI();
+        var uri = container.getMonitoringURI();
 
         try {
             HttpRequest requiest = HttpRequest.newBuilder()
@@ -39,13 +36,12 @@ abstract class AbstractNatsRunner {
 
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Failed connection for URI: " + uri, e);
         }
     }
 
     void checkConnectionEstablished(NatsStartable container) {
-        var uri = URI.create(container.getURI().toString().replace("[::1]", "localhost"));
-        // var uri = container.getURI();
+        var uri = container.getURI();
 
         var opsBuilder = Options.builder()
                 .server(uri.toString())
@@ -62,7 +58,7 @@ abstract class AbstractNatsRunner {
         try (Connection connection = Nats.connect(opsBuilder.build())) {
             connection.publish("subj", "subjValue".getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Failed connection for URI: " + uri, e);
         }
     }
 }

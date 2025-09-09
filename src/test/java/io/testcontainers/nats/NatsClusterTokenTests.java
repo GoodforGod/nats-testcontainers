@@ -1,10 +1,10 @@
 package io.testcontainers.nats;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Anton Kurako (GoodforGod)
